@@ -14,7 +14,7 @@ class TestModelOutput:
     def test_prediction_shape(self):
         """Test that predictions have correct shape."""
         X, y = load_data()
-        X_processed, y = preprocess_data(X, y)
+        X_processed, y, scaler = preprocess_data(X, y)
         
         X_train, X_test, y_train, y_test = train_test_split(
             X_processed, y, test_size=0.2, random_state=42
@@ -29,7 +29,7 @@ class TestModelOutput:
     def test_prediction_probabilities_shape(self):
         """Test that probability predictions have correct shape."""
         X, y = load_data()
-        X_processed, y = preprocess_data(X, y)
+        X_processed, y, scaler = preprocess_data(X, y)
         
         X_train, X_test, y_train, y_test = train_test_split(
             X_processed, y, test_size=0.2, random_state=42
@@ -44,7 +44,7 @@ class TestModelOutput:
     def test_prediction_classes_valid(self):
         """Test that predictions are valid class indices."""
         X, y = load_data()
-        X_processed, y = preprocess_data(X, y)
+        X_processed, y, scaler = preprocess_data(X, y)
         
         X_train, X_test, y_train, y_test = train_test_split(
             X_processed, y, test_size=0.2, random_state=42
@@ -59,7 +59,7 @@ class TestModelOutput:
     def test_probability_sum_to_one(self):
         """Test that probabilities sum to one."""
         X, y = load_data()
-        X_processed, y = preprocess_data(X, y)
+        X_processed, y, scaler = preprocess_data(X, y)
         
         X_train, X_test, y_train, y_test = train_test_split(
             X_processed, y, test_size=0.2, random_state=42
@@ -78,7 +78,7 @@ class TestModelPerformance:
     def test_minimum_accuracy(self):
         """Test that model achieves minimum accuracy."""
         X, y = load_data()
-        X_processed, y = preprocess_data(X, y)
+        X_processed, y, scaler = preprocess_data(X, y)
         
         X_train, X_test, y_train, y_test = train_test_split(
             X_processed, y, test_size=0.2, random_state=42
@@ -93,7 +93,7 @@ class TestModelPerformance:
     def test_better_than_baseline(self):
         """Test that model is better than random baseline."""
         X, y = load_data()
-        X_processed, y = preprocess_data(X, y)
+        X_processed, y, scaler = preprocess_data(X, y)
         
         X_train, X_test, y_train, y_test = train_test_split(
             X_processed, y, test_size=0.2, random_state=42
@@ -109,7 +109,7 @@ class TestModelPerformance:
     def test_generalizes_on_train_data(self):
         """Test that model generalizes on training data."""
         X, y = load_data()
-        X_processed, y = preprocess_data(X, y)
+        X_processed, y, scaler = preprocess_data(X, y)
         
         X_train, X_test, y_train, y_test = train_test_split(
             X_processed, y, test_size=0.2, random_state=42
@@ -127,7 +127,7 @@ class TestModelPerformance:
     def test_consistent_predictions(self):
         """Test that model makes consistent predictions."""
         X, y = load_data()
-        X_processed, y = preprocess_data(X, y)
+        X_processed, y, scaler = preprocess_data(X, y)
         
         X_train, X_test, _, _ = train_test_split(
             X_processed, y, test_size=0.2, random_state=42

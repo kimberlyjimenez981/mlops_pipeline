@@ -91,7 +91,7 @@ def main():
             
             # Preprocess
             logger.info("Preprocessing data...")
-            X_processed, y = preprocess_data(
+            X_processed, y, scaler = preprocess_data(
                 X, y,
                 normalize=config["preprocessing"]["normalize"],
                 handle_missing=config["preprocessing"]["handle_missing"]
@@ -113,7 +113,8 @@ def main():
             
             # Train model
             logger.info("Training model...")
-            model = train_model(X_train, y_train, config["model"])
+            model_params = {k: v for k, v in config["model"].items() if k != "type"}
+            model = train_model(X_train, y_train, model_params)
             
             # Evaluate
             logger.info("Evaluating model...")
