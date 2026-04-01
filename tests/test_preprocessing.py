@@ -50,8 +50,8 @@ class TestNormalizeFeatures:
         X = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
         X_normalized, scaler = normalize_features(X)
         
-        assert np.allclose(X_normalized.mean(), 0, atol=1e-10)
-        assert np.allclose(X_normalized.std(), 1, atol=1e-10)
+        assert np.allclose(X_normalized.mean().values, 0, atol=1e-10)
+        assert np.allclose(X_normalized.std(ddof=0).values, 1, atol=1e-10)
     
     def test_fit_on_different_data(self):
         """Test fitting scaler on different data."""
@@ -60,8 +60,9 @@ class TestNormalizeFeatures:
         
         X_test_norm, scaler = normalize_features(X_test, fit_on_X=X_train)
         
-        # Should use train statistics
-        assert X_test_norm.values[0, 0] == pytest.approx(1.5)
+        # Should use train statistics: (3 - mean([0,1,2])) / population_std([0,1,2])
+        # = (3-1) / sqrt(2/3) = 2 * sqrt(3/2) = sqrt(6)
+        assert X_test_norm.values[0, 0] == pytest.approx(np.sqrt(6))
     
     def test_preserves_shape(self):
         """Test that output shape is preserved."""
@@ -145,10 +146,11 @@ class TestPreprocessData:
         X = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
         y = pd.Series([0, 1, 0])
         
-        X_proc, y_proc = preprocess_data(X, y, normalize=False)
+        X_proc, y_proc, scaler = preprocess_data(X, y, normalize=False)
         
         assert X_proc.shape == X.shape
         assert len(y_proc) == len(y)
+        assert scaler is None
     
     def test_fit_on_different_data(self):
         """Test fitting on train data and transforming test data."""
@@ -160,7 +162,7 @@ class TestPreprocessData:
         X_train_proc, y_train_proc, scaler = preprocess_data(
             X_train, y_train, normalize=True
         )
-        X_test_proc, y_test_proc = preprocess_data(
+        X_test_proc, y_test_proc, scaler = preprocess_data(
             X_test, y_test, normalize=True, fit_on_X=X_train
         )
         

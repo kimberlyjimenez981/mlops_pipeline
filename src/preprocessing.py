@@ -151,7 +151,4 @@ def preprocess_data(X, y=None, normalize=True, handle_missing="mean", fit_on_X=N
     
     logger.info("Preprocessing pipeline completed")
     
-    if normalize:
-        return X_processed, y, scaler
-    else:
-        return X_processed, y
+    return X_processed, y, scaler
