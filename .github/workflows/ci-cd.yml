@@ -1,0 +1,88 @@
+name: MLOps CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          pytest tests/ -v --tb=short
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: .pytest_cache/
+
+  train:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Train model
+        run: |
+          python src/train.py
+
+      - name: Compare experiments
+        run: |
+          python compare_experiments.py
+
+      - name: Run drift monitoring
+        run: |
+          python monitor_drift.py
+        continue-on-error: true
+
+      - name: Upload model artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: model-artifacts
+          path: |
+            models/
+            reports/
+            mlruns/
+
+  status:
+    needs: [test, train]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Pipeline complete
+        run: |
+          echo "✓ MLOps pipeline execution complete"
+          echo "Tests: ${{ needs.test.result }}"
+          echo "Training: ${{ needs.train.result }}"
