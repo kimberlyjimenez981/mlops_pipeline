@@ -1,0 +1,7 @@
+outs:
+- path: data
+  hash: md5
+  md5: null
+  size: null
+  nfiles: null
+  isexec: false
