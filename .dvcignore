@@ -1,0 +1,6 @@
+# DVC ignore patterns
+.git
+.github
+__pycache__
+*.pyc
+mlruns/

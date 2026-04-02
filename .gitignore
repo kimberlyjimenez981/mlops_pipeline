@@ -32,6 +32,7 @@ mlruns/
 data/
 !data/.gitkeep
 models/
+!models/.gitkeep
 *.pkl
 *.joblib
 reports/*.html
