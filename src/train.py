@@ -9,8 +9,8 @@ import mlflow
 import mlflow.sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from src.preprocessing import load_data, preprocess_data
+from src.evaluation import evaluate_model, validate_model
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -46,30 +46,6 @@ def train_model(X_train, y_train, model_params):
     model.fit(X_train, y_train)
     logger.info("Model training completed")
     return model
-
-
-def evaluate_model(model, X_test, y_test):
-    """Evaluate model performance.
-    
-    Args:
-        model: Trained model
-        X_test: Test features
-        y_test: Test target
-    
-    Returns:
-        metrics: Dictionary of metrics
-    """
-    y_pred = model.predict(X_test)
-    
-    metrics = {
-        "accuracy": accuracy_score(y_test, y_pred),
-        "precision": precision_score(y_test, y_pred, average="weighted"),
-        "recall": recall_score(y_test, y_pred, average="weighted"),
-        "f1": f1_score(y_test, y_pred, average="weighted")
-    }
-    
-    logger.info(f"Model evaluation: {metrics}")
-    return metrics
 
 
 def main():
@@ -118,7 +94,7 @@ def main():
             
             # Evaluate
             logger.info("Evaluating model...")
-            metrics = evaluate_model(model, X_test, y_test)
+            metrics = validate_model(model, X_test, y_test)
             
             # Log metrics
             mlflow.log_metrics(metrics)
