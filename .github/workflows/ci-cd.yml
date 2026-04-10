@@ -33,6 +33,8 @@ jobs:
         with:
           name: test-results
           path: |
+            htmlcov/
+            coverage.xml
             coverage.xml
             htmlcov/
           if-no-files-found: warn
