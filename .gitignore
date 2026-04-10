@@ -29,6 +29,7 @@ env/
 *~
 .DS_Store
 mlruns/
+mlflow.db
 data/
 !data/.gitkeep
 models/

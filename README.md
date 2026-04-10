@@ -8,7 +8,10 @@ A complete MLOps pipeline with experiment tracking, testing, CI/CD, and drift mo
 mlops_pipeline/
 ├── src/                          # Source code
 │   ├── preprocessing.py         # Data preprocessing functions
-│   └── train.py                 # Training script
+│   ├── train.py                 # Training script
+│   └── evaluation.py            # Model evaluation and validation
+├── scripts/                      # Utility scripts
+│   └── run_multiple_experiments.py  # Run 5+ MLflow experiments
 ├── configs/                      # Configuration files
 │   └── config.yaml              # Training configuration
 ├── tests/                        # Test suite
@@ -17,12 +20,16 @@ mlops_pipeline/
 │   └── test_model.py            # Model validation tests
 ├── .github/workflows/            # CI/CD pipelines
 │   └── ci-cd.yml                # GitHub Actions workflow
+├── .dvc/                         # DVC metadata directory
 ├── data/                         # Data directory (tracked with DVC)
-├── models/                       # Trained models
+├── models/                       # Trained models (tracked with DVC)
+├── data.dvc                      # DVC pointer file for data/
+├── models.dvc                    # DVC pointer file for models/
 ├── reports/                      # Analysis reports
 ├── compare_experiments.py        # MLflow experiment comparison
 ├── monitor_drift.py              # Data drift detection
 ├── MONITORING.md                 # Drift analysis documentation
+├── EXPERIMENTS.md                # Documented MLflow experiment runs
 ├── requirements.txt              # Python dependencies
 ├── .gitignore                    # Git ignore rules
 └── README.md                     # This file
@@ -58,6 +65,16 @@ python src/train.py
 
 Configuration is read from `configs/config.yaml` (no hardcoded values).
 
+## Evaluation
+
+The `src/evaluation.py` module provides comprehensive model evaluation:
+
+- `evaluate_model` — computes accuracy, precision, recall, and F1 on a held-out test set
+- `cross_validate_model` — stratified k-fold cross-validation
+- `get_feature_importance` — ranked feature importances from tree-based models
+- `validate_model` — enforces minimum accuracy thresholds
+- `generate_performance_report` — full report including confusion matrix and classification report
+
 ## Experiment Tracking
 
 View all experiments in MLflow:
@@ -66,11 +83,19 @@ View all experiments in MLflow:
 mlflow ui
 ```
 
+Run 5+ experiments with varied hyperparameters:
+
+```bash
+python scripts/run_multiple_experiments.py
+```
+
 Compare experiments:
 
 ```bash
 python compare_experiments.py
 ```
+
+See [EXPERIMENTS.md](EXPERIMENTS.md) for documented run IDs, parameters, and metrics.
 
 ## Testing
 
